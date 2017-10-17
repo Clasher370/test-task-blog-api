@@ -8,6 +8,11 @@ class PostsController < ApplicationController
       render json: post.errors.messages, status: :unprocessable_entity
     end
   end
+  # завершить метод, достать из рэйтинга посты.
+  def top_rated
+    posts = Rating.includes(:post).order('post_rating DESC').limit(params[:limit]).map(&:post)
+    render json: posts, status: :ok
+  end
 
   private
 
