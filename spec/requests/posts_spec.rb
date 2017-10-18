@@ -19,15 +19,21 @@ describe 'Posts' do
 
     it { expect(response).to have_http_status 200 }
 
-    it 'is return top rated posts' do
+    it 'is return top rated post' do
       expect(JSON.parse(response.body)[0]['title']).to eq post2.title
     end
+
+    it 'is return title and content' do
+      expect(JSON.parse(response.body)[0]).to eq({ "title" => post2.title, 'content' => post2.content })
+    end
+
+    it { expect(JSON.parse(response.body).count).to eq 2 }
   end
 
   context '#ip_with_more_when_one_users' do
     it 'is return post if more 1 user' do
       get '/ips'
-      expect(JSON.parse(response.body)[0]['ip']).to eq another_ip
+      expect(JSON.parse(response.body)[0]).to eq({ 'ip' => another_ip, 'login' => [ user.login, another_user.login] })
     end
   end
 end
