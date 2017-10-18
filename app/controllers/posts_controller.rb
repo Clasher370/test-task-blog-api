@@ -1,6 +1,6 @@
 class PostsController < ApplicationController
   def create
-    user = User.find_by(login: params[:login]) || User.create(login: params[:login])
+    user = PostUserCreate.user(params[:login])
     post = user.posts.build(post_params)
     if post.save
       render json: post
@@ -10,7 +10,7 @@ class PostsController < ApplicationController
   end
 
   def top_rated
-    posts = Rating.includes(:post).order('post_rating DESC').limit(params[:limit]).map(&:post)
+    posts = TopRatedPosts.return_posts(params[:limit])
     render json: posts, status: :ok
   end
 
