@@ -14,7 +14,7 @@ describe 'Posts' do
   let!(:rating1) { Rating.create(post_id: post1.id, post_rating: 4) }
   let!(:rating2) { Rating.create(post_id: post2.id, post_rating: 5) }
 
-  context '#top' do
+  context '#top_rated' do
     before { post '/top_posts', params: { limit: 2 } }
 
     it { expect(response).to have_http_status 200 }

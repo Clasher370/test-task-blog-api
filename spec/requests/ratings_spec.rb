@@ -20,6 +20,8 @@ describe 'Ratings' do
     before { post '/rate_post', params: { post_id: new_post.id, rating: 1 } }
 
     it { expect(JSON.parse(response.body)['average_rating']).to eq 4.3 }
+
+    it { old_rating.reload; expect(old_rating.rating_count).to eq 6 }
   end
 
   context 'invalid without' do
