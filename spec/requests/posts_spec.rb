@@ -35,7 +35,7 @@ describe 'Posts' do
   end
 
   context '#top_rated' do
-    before { post '/top_posts', params: { limit: 2 } }
+    before { get '/top_posts', params: { limit: 2 } }
 
     it { expect(response).to have_http_status 200 }
 
