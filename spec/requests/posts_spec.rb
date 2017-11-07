@@ -29,22 +29,28 @@ describe 'Posts' do
     context 'invalid without' do
       let(:user) { create :user }
 
+      it 'all attr' do
+        post '/create_post'
+        expect(response).to have_http_status 422
+        expect(JSON.parse(response.body)['errors'].count).to eq 3
+      end
+
       it 'title' do
         post '/create_post', params: { content: 'Text', login: 'User'}
         expect(response).to have_http_status 422
-        expect(JSON.parse(response.body)['title']).to match ["can't be blank"]
+        expect(JSON.parse(response.body)['errors']['title']).to match ["can't be blank"]
       end
 
       it 'content' do
         post '/create_post', params: { title: 'Title', login: 'User'}
         expect(response).to have_http_status 422
-        expect(JSON.parse(response.body)['content']).to match ["can't be blank"]
+        expect(JSON.parse(response.body)['errors']['content']).to match ["can't be blank"]
       end
 
       it 'login' do
         post '/create_post'
         expect(response).to have_http_status 422
-        expect(JSON.parse(response.body)['login']).to match ["can't be blank"]
+        expect(JSON.parse(response.body)['errors']['user_id']).to match ["can't be blank"]
       end
     end
   end
