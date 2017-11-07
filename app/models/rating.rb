@@ -5,6 +5,6 @@ class Rating < ApplicationRecord
   private
 
   def rating_diapason
-    errors.add :rate, 'value must be from 1 to 5'
+    errors.add(:rate, 'value must be from 1 to 5') unless [*1..5].include? rate
   end
 end
