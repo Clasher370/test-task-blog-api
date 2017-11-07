@@ -1,14 +1,13 @@
 require 'rails_helper'
 
 describe 'Posts' do
-  describe 'create request' do
-    context 'with valid attributes' do
-      context 'exist user' do
-        let(:user) { create :user }
-        let(:post_attr) { attributes_for :post, login: user.login  }
-
+  describe '#create' do
+    let(:user) { create :user }
+    let(:post_attr) { attributes_for :post }
+    context 'with valid attributes when user' do
+      context 'exist' do
         before do
-          post '/create_post', params: post_attr
+          post '/create_post', params: post_attr.merge({ login: user.login })
         end
 
         it 'is return success status' do
@@ -16,40 +15,36 @@ describe 'Posts' do
         end
       end
 
-      context 'new user' do
-        let(:user) { build :user }
-        let(:post_attr) { attributes_for :post, login: user.login }
-
+      context 'is new' do
         it 'create user' do
-          expect { post '/create_post', params: post_attr }.to change { User.count }
+          expect { post '/create_post', params: post_attr.merge({ login: 'New_user' }) }
+              .to change { User.count }
         end
       end
     end
 
     context 'invalid without' do
-      let(:user) { create :user }
+      after do
+        expect(response).to have_http_status 422
+      end
 
       it 'all attr' do
         post '/create_post'
-        expect(response).to have_http_status 422
         expect(JSON.parse(response.body)['errors'].count).to eq 3
       end
 
       it 'title' do
-        post '/create_post', params: { content: 'Text', login: 'User'}
-        expect(response).to have_http_status 422
+        post '/create_post', params: post_attr.except(:title)
         expect(JSON.parse(response.body)['errors']['title']).to match ["can't be blank"]
       end
 
       it 'content' do
-        post '/create_post', params: { title: 'Title', login: 'User'}
-        expect(response).to have_http_status 422
+        post '/create_post', params: post_attr.except(:content)
         expect(JSON.parse(response.body)['errors']['content']).to match ["can't be blank"]
       end
 
       it 'login' do
-        post '/create_post'
-        expect(response).to have_http_status 422
+        post '/create_post', params: post_attr
         expect(JSON.parse(response.body)['errors']['user_id']).to match ["can't be blank"]
       end
     end
