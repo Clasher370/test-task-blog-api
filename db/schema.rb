@@ -25,11 +25,11 @@ ActiveRecord::Schema.define(version: 20171012100758) do
   end
 
   create_table "ratings", force: :cascade do |t|
-    t.float "post_rating"
-    t.integer "rating_count"
+    t.integer "rate"
     t.bigint "post_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["post_id"], name: "index_ratings_on_post_id"
   end
 
   create_table "users", force: :cascade do |t|
