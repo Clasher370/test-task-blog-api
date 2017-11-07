@@ -1,13 +1,10 @@
 class Rating < ApplicationRecord
   belongs_to :post
-
-  before_create :set_rating_count
-
-  validates_uniqueness_of :post_id
+  validate :rating_diapason
 
   private
 
-  def set_rating_count
-    self.rating_count ||= 1
+  def rating_diapason
+    errors.add :rate, 'value must be from 1 to 5'
   end
 end

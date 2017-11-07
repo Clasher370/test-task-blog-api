@@ -1,27 +1,31 @@
 require 'rails_helper'
 
 describe 'Ratings' do
-  let!(:user) { create(:user)}
-  let!(:new_post) { create(:post, user_id: user.id) }
+  subject { create(:post) }
 
-  context 'new rating' do
-    before { post '/rate_post', params: { post_id: new_post.id, rating: 5 } }
+  context 'new' do
+    before { post '/rate_post', params: { post_id: subject.id, rate: 5 } }
 
-    it 'is return status 200' do
+    it 'is return success status' do
       expect(response).to have_http_status(200)
     end
-    it { expect(JSON.parse(response.body)['error']).to be_nil }
-    it { expect(JSON.parse(response.body)['average_rating']).to eq 5.0 }
+
+    it { expect(JSON.parse(response.body)['post_rating']).to eq 5.0 }
   end
 
-  context 'old rating' do
-    let!(:old_rating) { create(:rating, post_id: new_post.id, post_rating: 5.0, rating_count: 5)}
+  context 'old' do
+    before do
+      post.ratings.create(rate: 5)
+      post '/rate_post', params: { post_id: subject.id, rating: 1 }
+    end
 
-    before { post '/rate_post', params: { post_id: new_post.id, rating: 1 } }
+    it 'is return success status' do
+      expect(response).to have_http_status(200)
+    end
 
-    it { expect(JSON.parse(response.body)['average_rating']).to eq 4.3 }
-
-    it { old_rating.reload; expect(old_rating.rating_count).to eq 6 }
+    it 'is return average rating' do
+      expect(JSON.parse(response.body)['post_rating']).to eq 3.0
+    end
   end
 
   context 'invalid without' do
@@ -31,12 +35,12 @@ describe 'Ratings' do
     end
 
     it 'rating' do
-      post '/rate_post', params: { post_id: new_post.id }
+      post '/rate_post', params: { post_id: subject.id }
       expect(response).to  have_http_status(422)
     end
 
     it 'correct rating' do
-      post '/rate_post', params: { post_id: new_post.id, rating: 'f' }
+      post '/rate_post', params: { post_id: subject.id, rating: 'f' }
       expect(response).to  have_http_status(422)
     end
 
