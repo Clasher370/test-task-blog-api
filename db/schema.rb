@@ -26,7 +26,7 @@ ActiveRecord::Schema.define(version: 20171012100758) do
   end
 
   create_table "ratings", force: :cascade do |t|
-    t.integer "rate"
+    t.float "rate"
     t.bigint "post_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
