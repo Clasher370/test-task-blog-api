@@ -52,13 +52,17 @@ describe 'Posts' do
   end
 
   describe '#top_posts' do
-    let(:post_one) { create :post_with_rating, rating: 5 }
-    let(:post_two) { create :post_with_rating, rating: 4 }
-    let(:post_three) { create :post }
+    let!(:first_post) { create :post_with_rating, rating: 4 }
+    let!(:second_post) { create :post_with_rating, rating: 5 }
+    let!(:third_post) { create :post }
 
     before do
-      post_one; post_two; post_three
       get '/posts/top'
+    end
+
+    it 'with limit' do
+      get '/posts/top', params: { limit: 2 }
+      expect(JSON.parse(response.body).count).to eq 2
     end
 
     it 'success status' do
@@ -66,15 +70,15 @@ describe 'Posts' do
     end
 
     it 'return array of posts' do
-      expect(JSON.parse(response.body.count)).to eq 3
+      expect(JSON.parse(response.body).count).to eq 3
     end
 
     it 'first is a top rated post' do
-      expect(JSON.parse(response.body)[0]).to eq post_one
+      expect(JSON.parse(response.body)[0]['title']).to eq second_post.title
     end
 
     it 'last is a post without rate' do
-      expect(JSON.parse(response.body)[2]).to eq post_three
+      expect(JSON.parse(response.body)[2]['title']).to eq third_post.title
     end
   end
 end

@@ -5,6 +5,9 @@ class Post < ApplicationRecord
   validates_presence_of :title, :content, :user_id
 
   def self.average_rating
-    select(:id, 'AVG(ratings.rate) rating').joins(:ratings).group('posts.id')
+    select(:id, :title, :content, 'AVG(ratings.rate) rating')
+        .left_outer_joins(:ratings)
+        .group('posts.id')
+        .order('rating DESC NULLS LAST')
   end
 end

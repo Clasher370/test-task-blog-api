@@ -10,7 +10,7 @@ class PostsController < ApplicationController
   end
 
   def top_rated
-    posts = TopRatedPosts.return_posts(params[:limit])
+    posts = Post.average_rating.limit(params[:limit])
     render json: posts, status: :ok
   end
 
