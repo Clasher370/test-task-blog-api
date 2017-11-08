@@ -10,7 +10,7 @@ describe 'Ratings' do
       expect(response).to have_http_status(200)
     end
 
-    it { expect(JSON.parse(response.body)["#{subject.id}"]).to eq '5.0' }
+    it { expect(JSON.parse(response.body)["#{subject.id}"]).to eq 5.0 }
   end
 
   context 'old return' do
@@ -24,7 +24,7 @@ describe 'Ratings' do
     end
 
     it 'average rating' do
-      expect(JSON.parse(response.body)["#{subject.id}"]).to eq '3.0'
+      expect(JSON.parse(response.body)["#{subject.id}"]).to eq 3.0
     end
   end
 
