@@ -14,11 +14,6 @@ class PostsController < ApplicationController
     render json: posts, status: :ok
   end
 
-  def ip_with_more_when_one_users
-    object = IpsWithLogin.create_object
-    render json: object, status: :ok
-  end
-
   private
 
   def post_params
